@@ -1,13 +1,15 @@
-import Image from "next/image";
+import GameBar from "@/components/GameBar";
+import Grid from "@/components/Grid";
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between p-24'>
-      <div className='z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex'>
+    <>
+      <div className='text-center'>
         <h1>Minesweeper</h1>
         <h2>Created by Abul Chowdhury</h2>
-        <></>
       </div>
-    </main>
+      <GameBar />
+      <Grid />
+    </>
   );
 }
