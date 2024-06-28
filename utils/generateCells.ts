@@ -8,7 +8,7 @@ export const generateCells = () => {
 
     for (let col = 0; col < 9; col++) {
       cells[row].push({
-        cellValue: CellValues.none,
+        cellValue: CellValues.bomb,
         cellState: CellState.closed,
       });
     }
