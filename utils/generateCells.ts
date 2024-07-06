@@ -1,10 +1,13 @@
 import { CellState, CellValues, Cell } from "@/types/CellValues";
 
-const rows: number = 9;
-const columns: number = 9;
-const bombs: number = 9;
+export const rows: number = 12;
+export const columns: number = 12;
+const bombs: number = 25;
 
-export const generateCells = () => {
+export const generateCells = (): {
+  cells: Cell[][];
+  bombs: { row: number; column: number }[];
+} => {
   const cells: Cell[][] = [];
 
   for (let row = 0; row < rows; row++) {
@@ -19,6 +22,8 @@ export const generateCells = () => {
   }
 
   let placedBombs = 0;
+  const bombLocations: { row: number; column: number }[] = [];
+
   while (placedBombs < bombs) {
     const randomRow = Math.floor(Math.random() * rows);
     const randomCol = Math.floor(Math.random() * columns);
@@ -27,6 +32,8 @@ export const generateCells = () => {
     if (cells[randomRow][randomCol].cellValue !== CellValues.bomb) {
       cells[randomRow][randomCol].cellValue = CellValues.bomb;
       placedBombs++;
+      bombLocations.push({ row: randomRow, column: randomCol });
+
       // Increment adjacent Cells
       if (checkRowCol(randomRow, randomCol + 1))
         cells[randomRow][randomCol + 1] = incrementAdjacent(
@@ -63,7 +70,7 @@ export const generateCells = () => {
     }
   }
 
-  return cells;
+  return { cells: cells, bombs: bombLocations };
 };
 
 const checkRowCol = (row: number, col: number): boolean => {

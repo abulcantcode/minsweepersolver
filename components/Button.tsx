@@ -57,10 +57,10 @@ const Button: React.FC<ButtonProps> = ({
     <div
       onClick={() => onClick(row, column)}
       onContextMenu={handleRightClick}
-      className={`h-14 w-14 text-center content-center m-1 ${
+      className={`h-14 w-14 text-center content-center border-4 ${
         state === CellState.opened
-          ? "border-solid bg-green-800 border-white border-2 text-white"
-          : "border-solid bg-green-600 border-green-400 border-2 text-white hover:bg-green-700"
+          ? "border-solid bg-green-900 border-t-green-800 border-l-green-800 border-b-green-400 border-r-green-400 text-white"
+          : "border-solid bg-green-600 border-t-green-400 border-l-green-400 border-b-green-800 border-r-green-800 text-white hover:bg-green-700"
       }`}
     >
       {renderContent()}

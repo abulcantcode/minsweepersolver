@@ -1,25 +1,58 @@
 "use client";
 import React, { useState } from "react";
 import Button from "./Button";
-import { generateCells } from "@/utils/generateCells";
-import { CellState } from "@/types/CellValues";
+import { columns, generateCells, rows } from "@/utils/generateCells";
+import { CellState, CellValues } from "@/types/CellValues";
+import { useGame } from "./GameContext";
 
 const Grid = () => {
-  const [cells, setCells] = useState(generateCells());
+  const { cells, bombs, setCells, setBombs } = useGame();
 
   const handleOnClick = (row: number, column: number) => {
-    setCells((prevCells) => {
-      const newCells = [...prevCells];
-      newCells[row] = [...newCells[row]];
-      newCells[row][column] = {
-        ...newCells[row][column],
-        cellState:
-          newCells[row][column].cellState === CellState.closed
-            ? CellState.opened
-            : newCells[row][column].cellState,
-      };
-      return newCells;
-    });
+    if (cells[row][column].cellValue === CellValues.bomb) {
+      setCells((prevCells) => {
+        const newCells = [...prevCells];
+        bombs.forEach(({ row, column }) => {
+          newCells[row][column].cellState = CellState.opened;
+        });
+        return newCells;
+      });
+    } else {
+      setCells((prevCells) => {
+        const newCells = [...prevCells];
+        const queue: { row: number; column: number }[] = [{ row, column }];
+
+        while (queue.length > 0) {
+          const { row: r, column: c } = queue.shift()!;
+
+          if (
+            r < 0 ||
+            r >= rows ||
+            c < 0 ||
+            c >= columns ||
+            newCells[r][c].cellState === CellState.opened ||
+            newCells[r][c].cellState === CellState.flagged
+          ) {
+            continue;
+          }
+
+          newCells[r][c].cellState = CellState.opened;
+
+          if (newCells[r][c].cellValue === CellValues.none) {
+            queue.push({ row: r - 1, column: c - 1 }); // top-left
+            queue.push({ row: r - 1, column: c }); // top
+            queue.push({ row: r - 1, column: c + 1 }); // top-right
+            queue.push({ row: r, column: c - 1 }); // left
+            queue.push({ row: r, column: c + 1 }); // right
+            queue.push({ row: r + 1, column: c - 1 }); // bottom-left
+            queue.push({ row: r + 1, column: c }); // bottom
+            queue.push({ row: r + 1, column: c + 1 }); // bottom-right
+          }
+        }
+
+        return newCells;
+      });
+    }
   };
 
   const handleCellRightClick = (row: number, column: number) => {
@@ -57,8 +90,8 @@ const Grid = () => {
 
   return (
     <>
-      <div className='w-1/2 flex justify-center '>
-        <div className='grid grid-rows-9 grid-cols-9'>{renderCells()}</div>
+      <div className='w-1/2 flex justify-center mx-auto'>
+        <div className='grid grid-rows-12 grid-cols-12'>{renderCells()}</div>
       </div>
     </>
   );
