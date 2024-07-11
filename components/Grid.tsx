@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
 import Button from "./Button";
-import { columns, generateCells, rows } from "@/utils/generateCells";
+import { columns, rows } from "@/utils/generateCells";
 import { CellState, CellValues } from "@/types/CellValues";
 import { useGame } from "./GameContext";
 
